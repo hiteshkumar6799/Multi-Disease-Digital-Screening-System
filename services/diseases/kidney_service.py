@@ -1,3 +1,4 @@
+import os
 import joblib
 import numpy as np
 import shap
@@ -5,8 +6,18 @@ import shap
 from services.db_utils import get_float
 from services.shap_utils import compute_shap_percentages
 
-kidney_model = joblib.load("models/kidney_xgboost_final.pkl")
-kidney_scaler = joblib.load("models/kidney_scaler.pkl")
+# ✅ Absolute path setup
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.abspath(os.path.join(BASE_DIR, "../../models"))
+
+# ✅ Load models safely
+kidney_model_path = os.path.join(MODEL_DIR, "kidney_xgboost_final.pkl")
+kidney_scaler_path = os.path.join(MODEL_DIR, "kidney_scaler.pkl")
+
+kidney_model = joblib.load(kidney_model_path)
+kidney_scaler = joblib.load(kidney_scaler_path)
+
+# ✅ SHAP explainer
 kidney_explainer = shap.TreeExplainer(kidney_model)
 
 
