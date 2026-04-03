@@ -10,31 +10,103 @@
             box-sizing: border-box;
         }
 
+        /* 🔥 FULL BACKGROUND IMAGE */
         body {
             margin: 0;
             font-family: "Segoe UI", Arial, sans-serif;
-            background: #f2f7fb;
             color: #333;
+
+            background: url("{{ url_for('static', filename='images/index.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
         }
 
-        
-        .hero {
-            background: linear-gradient(135deg, #0f4c75, #3282b8);
+        /* 🔥 OVERLAY FOR READABILITY */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(15,76,117,0.92), rgba(50,130,184,0.6));
+            z-index: -1;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 15px 30px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             color: white;
-            padding: 80px 20px;
-            text-align: center;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn-nav {
+            padding: 8px 16px;
+            background: #00bcd4;
+            border-radius: 5px;
+        }
+
+        /* HERO */
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /* REMOVE background from hero (important) */
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1100px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        .hero-text {
+            max-width: 500px;
+            color: white;
         }
 
         .hero h1 {
-            font-size: 42px;
-            margin-bottom: 12px;
+            font-size: 44px;
+            margin: 15px 0;
         }
 
         .hero p {
             font-size: 18px;
-            max-width: 850px;
-            margin: auto;
             line-height: 1.6;
+        }
+
+        .tag {
+            background: white;
+            color: #0f4c75;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 5px;
+            font-weight: bold;
         }
 
         .cta-buttons {
@@ -43,26 +115,42 @@
 
         .cta-buttons a {
             display: inline-block;
-            margin: 10px;
+            margin: 10px 10px 0 0;
             padding: 12px 26px;
-            background: white;
-            color: #0f4c75;
             text-decoration: none;
             font-weight: bold;
             border-radius: 6px;
             transition: all 0.3s ease;
         }
 
+        .cta-buttons a:first-child {
+            background: #00bcd4;
+            color: white;
+        }
+
+        .cta-buttons a:last-child {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
         .cta-buttons a:hover {
-            background: #e3f2fd;
             transform: translateY(-2px);
         }
 
-        
+        /* 🔥 GLASS EFFECT SECTIONS */
+
         .section {
             max-width: 1100px;
-            margin: 60px auto;
-            padding: 0 20px;
+            margin: 40px auto 60px;
+            padding: 40px 20px;
+            border-radius: 16px;
+
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
         }
 
         .section h2 {
@@ -79,7 +167,6 @@
             font-size: 16px;
         }
 
-        
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -88,7 +175,7 @@
         }
 
         .feature-box {
-            background: white;
+            background: rgba(255,255,255,0.95);
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.08);
@@ -105,7 +192,6 @@
             color: #1b6ca8;
         }
 
-        
         .use-cases {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -114,7 +200,7 @@
         }
 
         .use-case {
-            background: white;
+            background: rgba(255,255,255,0.95);
             padding: 22px;
             border-left: 6px solid #1b6ca8;
             border-radius: 6px;
@@ -126,7 +212,8 @@
             color: #0f4c75;
         }
 
-        
+        /* FOOTER */
+
         .footer {
             background: #0f4c75;
             color: white;
@@ -136,8 +223,14 @@
             font-size: 13px;
         }
 
-        
+        /* MOBILE */
+
         @media (max-width: 768px) {
+            .hero {
+                height: auto;
+                padding: 120px 20px;
+            }
+
             .hero h1 {
                 font-size: 30px;
             }
@@ -148,24 +241,42 @@
         }
     </style>
 </head>
+
 <body>
 
-
-<div class="hero">
-    <h1> Multi Disease Digital Screening System</h1>
-    <p>
-        A doctor-assisted AI platform for early screening of
-        <b>Diabetes</b>, <b>Heart Disease</b>, and <b>Kidney Disease</b>
-        using Explainable Artificial Intelligence.
-    </p>
-
-    <div class="cta-buttons">
-        <a href="/login">Login</a>
-        <a href="/signup">Create Account</a>
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-container">
+        <div class="logo">Multi Disease Detection</div>
+        <div class="nav-links">
+            <a href="{{ url_for('auth.login') }}" class="btn-nav">Login</a>
+        </div>
     </div>
 </div>
 
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="tag">HEALTHCARE AI SYSTEM</span>
 
+            <h1>Prevention Is Better Than Cure</h1>
+
+            <p>
+                AI-powered screening for <b>Diabetes</b>, 
+                <b>Heart Disease</b>, and <b>Kidney Disease</b>
+                with explainable results.
+            </p>
+
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth.login') }}">Get Started</a>
+                <a href="{{ url_for('auth.signup') }}">Create Account</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 1 -->
 <div class="section">
     <h2>Why Use This Healthcare Platform?</h2>
     <p>
@@ -192,7 +303,7 @@
     </div>
 </div>
 
-
+<!-- SECTION 2 -->
 <div class="section">
     <h2>Why You Can Trust This System</h2>
     <p>
@@ -218,7 +329,7 @@
     </div>
 </div>
 
-
+<!-- SECTION 3 -->
 <div class="section">
     <h2>Where Can This Be Used?</h2>
 
@@ -240,7 +351,7 @@
     </div>
 </div>
 
-
+<!-- FOOTER -->
 <div class="footer">
     <p>
         ⚠ Disclaimer: This AI system is for screening purposes only

@@ -11,7 +11,6 @@
             color: #333;
         }
 
-        
         .header {
             display: flex;
             align-items: center;
@@ -58,7 +57,6 @@
             transform: scale(1.1);
         }
 
-        
         .container {
             max-width: 1100px;
             margin: 40px auto;
@@ -81,7 +79,6 @@
             color: #444;
         }
 
-        
         .filter-bar {
             display: flex;
             gap: 15px;
@@ -111,7 +108,6 @@
             background: #09324e;
         }
 
-        
         .progress-section {
             margin-bottom: 40px;
             background: rgba(255,255,255,0.75);
@@ -163,7 +159,6 @@
             height: 300px;
         }
 
-        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -210,17 +205,13 @@
             cursor: pointer;
             font-size: 13px;
         }
-
     </style>
 </head>
 <body>
 
-
 <div class="header">
-
-    
     <div class="header-left">
-        <a href="/dashboard" class="icon-btn" title="Back to Dashboard">
+        <a href="{{ url_for('main.dashboard') }}" class="icon-btn" title="Back to Dashboard">
             <svg viewBox="0 0 24 24">
                 <path d="M15 18l-6-6 6-6"
                       stroke="#0f4c75"
@@ -232,15 +223,12 @@
         </a>
     </div>
 
-    
     <div class="header-center">
         <h2>Account Activity Log</h2>
     </div>
 
     <div class="header-right"></div>
-
 </div>
-
 
 <div class="container">
 
@@ -248,7 +236,6 @@
         Total Predictions: <b>{{ total_predictions }}</b>
     </div>
 
-    
     <form method="get" class="filter-bar">
         <input type="text" name="search"
                placeholder="Search by disease..."
@@ -277,11 +264,11 @@
         <div class="legend">
             <div class="legend-item">
                 <div class="legend-color" style="background:#27ae60;"></div>
-                Improved
+                Risk decreased  
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background:#c0392b;"></div>
-                Worsened
+                Risk increased  
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background:#3498db;"></div>
@@ -322,10 +309,12 @@
             </td>
             <td>{{ (p.probability * 100) | round(2) }}%</td>
             <td>
-                <a href="/download_pdf/{{ p.id }}" class="btn-download">Download</a>
+                <a href="{{ url_for('reports.download_specific_pdf', prediction_id=p.id) }}" class="btn-download">
+                    Download
+                </a>
             </td>
             <td>
-                <form action="/delete_prediction/{{ p.id }}" method="post"
+                <form action="{{ url_for('reports.delete_prediction', prediction_id=p.id) }}" method="post"
                       onsubmit="return confirm('Are you sure?');">
                     <button type="submit" class="btn-delete">Delete</button>
                 </form>

@@ -150,17 +150,16 @@
         </div>
 
         <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
-            <a href="/forgot_password" style="font-size:13px; color:#3282b8; text-decoration:none;">
+            <a href="{{ url_for('auth.forgot_password') }}" style="font-size:13px; color:#3282b8; text-decoration:none;">
                 Forgot Password?
             </a>
         </div>
-
 
         <button type="submit" class="login-btn">🔐 Login</button>
     </form>
 
     <div class="signup-link">
-        New user? <a href="/signup">Create an account</a>
+        New user? <a href="{{ url_for('auth.signup') }}">Create an account</a>
     </div>
 
     <div class="security-note">

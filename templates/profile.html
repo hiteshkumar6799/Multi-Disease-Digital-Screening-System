@@ -117,7 +117,6 @@ button {
     background: #333;
 }
 
-
 .btn-back {
     background: #34495e;
     color: white;
@@ -133,8 +132,6 @@ button {
     background: #2c3e50;
     transform: translateY(-2px);
 }
-
-
 
 /* FLASH */
 .flash {
@@ -221,15 +218,13 @@ button {
 </div>
 
 <div style="text-align:left; padding-left:20px;">
-    <a href="/dashboard" class="btn-back">
+    <a href="{{ url_for('main.dashboard') }}" class="btn-back">
         ⬅ Back to Dashboard
     </a>
 </div>
 
-
 <div class="container">
 
-    
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -242,10 +237,9 @@ button {
 
     <div class="grid">
 
-        
         <div class="card">
             <h3>Update Email Address</h3>
-            <form action="/update_email" method="post">
+            <form action="{{ url_for('auth.update_email') }}" method="post">
                 <label>New Email</label>
                 <input type="email" name="new_email" required>
 
@@ -256,10 +250,9 @@ button {
             </form>
         </div>
 
-        
         <div class="card">
             <h3>Change Password</h3>
-            <form action="/update_password" method="post">
+            <form action="{{ url_for('auth.update_password') }}" method="post">
                 <label>Current Password</label>
                 <input type="password" name="current_password" required>
 
@@ -270,7 +263,6 @@ button {
             </form>
         </div>
 
-        
         <div class="card">
             <h3 style="color:#c0392b;">Delete Account</h3>
             <p style="font-size:13px;color:#777;">
@@ -284,22 +276,20 @@ button {
 
     </div>
 
-    
     <div style="text-align:center; margin-top:40px;">
-        <a href="/logout">
+        <a href="{{ url_for('auth.logout') }}">
             <button class="btn-logout">Logout</button>
         </a>
     </div>
 
 </div>
 
-
 <div id="deleteModal" class="modal">
     <div class="modal-content">
         <h3>⚠ Confirm Account Deletion</h3>
         <p>This action is permanent and cannot be undone.</p>
 
-        <form action="/delete_account" method="post">
+        <form action="{{ url_for('auth.delete_account') }}" method="post">
             <input type="password" name="password" placeholder="Enter password to confirm" required>
 
             <div style="margin-top:20px;">

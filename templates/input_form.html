@@ -1,76 +1,146 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <title>Health Screening Input</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-        }
+```
+<style>
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #0f4c75, #1b6ca8);
+        animation: fadeIn 0.8s ease-in-out;
+    }
 
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #0f4c75;
+    }
+
+    details {
+        margin: 20px 0;
+        background: #f1f6fb;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    label {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-top: 6px;
+        transition: 0.3s;
+    }
+
+    input:focus {
+        border-color: #1b6ca8;
+        box-shadow: 0 0 6px rgba(27,108,168,0.4);
+        outline: none;
+    }
+
+    /* 🔴 Error Styling */
+    .error {
+        border: 2px solid red !important;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    button[type="submit"] {
+        margin-top: 30px;
+        width: 100%;
+        padding: 12px;
+        font-size: 15px;
+        background: #0f4c75;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button[type="submit"]:hover {
+        background: #09324e;
+        transform: translateY(-2px);
+    }
+
+    .btn-group {
+        margin-top: 25px;
+        text-align: center;
+    }
+
+    .btn-secondary {
+        background: #e6eef5;
+        border: none;
+        margin: 5px;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background: #d4e3f1;
+    }
+
+    .note {
+        text-align: center;
+        font-size: 12px;
+        color: gray;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
         .container {
-            background: white;
-            width: 520px;
-            margin: 40px auto;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 15px;
+            padding: 20px;
         }
 
-        h2 {
-            text-align: center;
+        .form-grid {
+            grid-template-columns: 1fr;
         }
+    }
+</style>
+```
 
-        label {
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 6px;
-            margin-top: 4px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            padding: 10px 16px;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-
-        .btn-group {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            border: none;
-            margin: 5px;
-            padding: 8px 14px;
-            cursor: pointer;
-        }
-
-        details {
-            margin: 15px 0;
-            background: #eef3f7;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        summary {
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .note {
-            font-size: 12px;
-            color: gray;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
 
@@ -83,147 +153,199 @@
     {% endif %}
 </h2>
 
-
 <details>
     <summary>ℹ️ How do I get these values?</summary>
 
-    {% if disease == "diabetes" %}
-        <ul>
-            <li><b>Pregnancies</b> → Number of times pregnant</li>
-            <li><b>Glucose</b> → Fasting blood sugar test</li>
-            <li><b>Blood Pressure</b> → BP machine (diastolic)</li>
-            <li><b>Skin Thickness</b> → Clinical measurement</li>
-            <li><b>Insulin</b> → Blood insulin test</li>
-            <li><b>BMI(Body Mass Index)</b> → Weight / Height²</li>
-            <li>
-                <b>DPF (Diabetes Pedigree Function)</b> →  
-                A score representing family history of diabetes.  
-                Derived from family medical history; typical values range from 0.3 to 0.8.
-            </li>
+```
+{% if disease == "diabetes" %}
+<ul>
+    <li><b>Pregnancies</b> → Number of times pregnant</li>
+    <li><b>Glucose</b> → Fasting blood sugar test</li>
+    <li><b>Blood Pressure</b> → BP machine (diastolic)</li>
+    <li><b>Skin Thickness</b> → Clinical measurement</li>
+    <li><b>Insulin</b> → Blood insulin test</li>
+    <li><b>BMI</b> → Weight / Height²</li>
+    <li><b>DPF</b> → Family history score (0.3–0.8 typical)</li>
+    <li><b>Age</b> → Current age</li>
+</ul>
 
-            <li><b>Age</b> → Current age</li>
-        </ul>
+{% elif disease == "heart" %}
+<ul>
+    <li><b>Age</b> → Current age</li>
+    <li><b>Sex</b> → Male = 1, Female = 0</li>
+    <li><b>Chest Pain</b> → Doctor diagnosis (0–3)</li>
+    <li><b>Blood Pressure</b> → BP machine</li>
+    <li><b>Cholesterol</b> → Lipid profile test</li>
+    <li><b>ECG</b> → ECG report</li>
+    <li><b>Max Heart Rate</b> → Stress test</li>
+    <li><b>Exercise Angina</b> → Yes = 1, No = 0</li>
+</ul>
 
-    {% elif disease == "heart" %}
-        <ul>
-            <li><b>Age</b> → Current age</li>
-            <li><b>Sex</b> → Male = 1, Female = 0</li>
-            <li><b>Chest Pain</b> → Doctor diagnosis (0–3)</li>
-            <li><b>Blood Pressure</b> → BP machine</li>
-            <li><b>Cholesterol</b> → Lipid profile test</li>
-            <li><b>ECG</b> → ECG report</li>
-            <li><b>Max Heart Rate</b> → Stress test</li>
-            <li><b>Exercise Angina</b> → Yes = 1, No = 0</li>
-        </ul>
+{% else %}
+<ul>
+    <li><b>Blood Urea</b> → Kidney blood test</li>
+    <li><b>Creatinine</b> → Serum creatinine</li>
+    <li><b>Sodium</b> → Electrolyte test</li>
+    <li><b>Potassium</b> → Electrolyte test</li>
+    <li><b>Hemoglobin</b> → CBC test</li>
+    <li><b>PCV</b> → CBC test</li>
+    <li><b>Sugar</b> → Urine sugar (Yes = 1, No = 0)</li>
+    <li><b>Blood Pressure</b> → BP machine</li>
+    <li><b>Age</b> → Current age</li>
+</ul>
+{% endif %}
+```
 
-    {% else %}
-        <ul>
-            <li><b>Blood Urea</b> → Kidney blood test</li>
-            <li><b>Creatinine</b> → Serum creatinine test</li>
-            <li><b>Sodium</b> → Electrolyte test</li>
-            <li><b>Potassium</b> → Electrolyte test</li>
-            <li><b>Hemoglobin</b> → CBC test</li>
-            <li><b>PCV</b> → CBC test</li>
-            <li><b>Sugar</b> → Urine sugar test (Yes=1, No=0)</li>
-            <li><b>Blood Pressure</b> → BP machine</li>
-        </ul>
-    {% endif %}
 </details>
 
-<form action="/predict" method="post">
-    <input type="hidden" name="disease" value="{{ disease }}">
+<form action="{{ url_for('prediction.predict') }}" method="post">
+<input type="hidden" name="disease" value="{{ disease }}">
 
-    {% if disease == "diabetes" %}
-        <label>Pregnancies</label>
-        <input type="number" name="pregnancies" placeholder="e.g. 2">
+<div class="form-grid">
 
-        <label>Glucose (mg/dL)</label>
-        <input type="number" name="glucose" placeholder="e.g. 140">
+{% if disease == "diabetes" %}
 
-        <label>Blood Pressure (mmHg)</label>
-        <input type="number" name="bp" placeholder="e.g. 80">
+<div><label>Pregnancies</label><input type="number" name="pregnancies" min="0" max="20" required placeholder="e.g. 2"></div>
+<div><label>Glucose (mg/dL)</label><input type="number" name="glucose" min="50" max="300" required placeholder="e.g. 140"></div>
+<div><label>Blood Pressure (mmHg)</label><input type="number" name="bp" min="40" max="180" required placeholder="e.g. 80"></div>
+<div><label>Skin Thickness (mm)</label><input type="number" name="skin" min="5" max="100" required placeholder="e.g. 20"></div>
+<div><label>Insulin (µU/mL)</label><input type="number" name="insulin" min="10" max="900" required placeholder="e.g. 90"></div>
+<div><label>BMI</label><input type="number" step="0.1" name="bmi" min="10" max="60" required placeholder="e.g. 28.5"></div>
+<div><label>DPF</label><input type="number" step="0.01" name="dpf" min="0.05" max="2.5" required placeholder="e.g. 0.62"></div>
+<div><label>Age</label><input type="number" name="age" min="1" max="120" required placeholder="e.g. 45"></div>
 
-        <label>Skin Thickness (mm)</label>
-        <input type="number" name="skin" placeholder="e.g. 20">
+{% elif disease == "heart" %}
 
-        <label>Insulin (µU/mL)</label>
-        <input type="number" name="insulin" placeholder="e.g. 90">
+<div><label>Age</label><input type="number" name="age" min="1" max="120" required placeholder="e.g. 55"></div>
+<div><label>Sex (Male = 1, Female = 0)</label><input type="number" name="sex" min="0" max="1" required placeholder="e.g. 1"></div>
+<div><label>Chest Pain (0–3)</label><input type="number" name="cp" min="0" max="3" required placeholder="e.g. 2"></div>
+<div><label>Blood Pressure (mmHg)</label><input type="number" name="bp" min="80" max="200" required placeholder="e.g. 130"></div>
+<div><label>Cholesterol (mg/dL)</label><input type="number" name="chol" min="100" max="600" required placeholder="e.g. 240"></div>
+<div><label>ECG (0–2)</label><input type="number" name="ecg" min="0" max="2" required placeholder="e.g. 1"></div>
+<div><label>Max Heart Rate</label><input type="number" name="thalach" min="60" max="220" required placeholder="e.g. 150"></div>
+<div><label>Exercise Angina (Yes = 1, No = 0)</label><input type="number" name="exang" min="0" max="1" required placeholder="e.g. 0"></div>
 
-        <label>BMI</label>
-        <input type="number" step="0.1" name="bmi" placeholder="e.g. 28.5">
+{% else %}
 
-        <label>DPF</label>
-        <input type="number" step="0.01" name="dpf" placeholder="e.g. 0.62">
+<div><label>Blood Urea (mg/dL)</label><input type="number" name="urea" min="10" max="200" required placeholder="e.g. 45"></div>
+<div><label>Creatinine (mg/dL)</label><input type="number" step="0.1" name="creatinine" min="0.5" max="15" required placeholder="e.g. 1.8"></div>
+<div><label>Sodium (mEq/L)</label><input type="number" step="0.1" name="sodium" min="120" max="160" required placeholder="e.g. 140"></div>
+<div><label>Potassium (mEq/L)</label><input type="number" step="0.1" name="potassium" min="2.0" max="7.0" required placeholder="e.g. 4.5"></div>
+<div><label>Hemoglobin (g/dL)</label><input type="number" step="0.1" name="hemo" min="5" max="20" required placeholder="e.g. 12.5"></div>
+<div><label>PCV (%)</label><input type="number" step="0.1" name="pcv" min="15" max="60" required placeholder="e.g. 40"></div>
+<div><label>Sugar (Yes = 1, No = 0)</label><input type="number" name="sugar" min="0" max="1" required placeholder="e.g. 0"></div>
+<div><label>Blood Pressure (mmHg)</label><input type="number" name="bp" min="80" max="200" required placeholder="e.g. 130"></div>
+<div><label>Age</label><input type="number" name="age" min="1" max="120" required placeholder="e.g. 45"></div>
+{% endif %}
 
-        <label>Age</label>
-        <input type="number" name="age" placeholder="e.g. 45">
+</div>
 
-    {% elif disease == "heart" %}
-        <label>Age</label>
-        <input type="number" name="age" placeholder="e.g. 55">
+<button type="submit">🔍 Predict Risk</button>
 
-        <label>Sex (Male=1, Female=0)</label>
-        <input type="number" name="sex" placeholder="e.g. 1">
-
-        <label>Chest Pain Type (0–3)</label>
-        <input type="number" name="cp" placeholder="e.g. 2">
-
-        <label>Blood Pressure (mmHg)</label>
-        <input type="number" name="bp" placeholder="e.g. 130">
-
-        <label>Cholesterol (mg/dL)</label>
-        <input type="number" name="chol" placeholder="e.g. 240">
-
-        <label>ECG Result (0–2)</label>
-        <input type="number" name="ecg" placeholder="e.g. 1">
-
-        <label>Maximum Heart Rate</label>
-        <input type="number" name="thalach" placeholder="e.g. 150">
-
-        <label>Exercise Induced Angina (Yes=1, No=0)</label>
-        <input type="number" name="exang" placeholder="e.g. 0">
-
-    {% else %}
-        <label>Blood Urea (mg/dL)</label>
-        <input type="number" name="urea" placeholder="e.g. 45">
-
-        <label>Creatinine (mg/dL)</label>
-        <input type="number" step="0.1" name="creatinine" placeholder="e.g. 1.8">
-
-        <label>Sodium (mEq/L)</label>
-        <input type="number" step="0.1" name="sodium" placeholder="e.g. 140">
-
-        <label>Potassium (mEq/L)</label>
-        <input type="number" step="0.1" name="potassium" placeholder="e.g. 4.5">
-
-        <label>Hemoglobin (g/dL)</label>
-        <input type="number" step="0.1" name="hemo" placeholder="e.g. 12.5">
-
-        <label>PCV (%)</label>
-        <input type="number" step="0.1" name="pcv" placeholder="e.g. 40">
-
-        <label>Sugar (Yes=1, No=0)</label>
-        <input type="number" name="sugar" placeholder="e.g. 0">
-
-        <label>Blood Pressure (mmHg)</label>
-        <input type="number" name="bp" placeholder="e.g. 130">
-
-        <label>Age</label>
-        <input type="number" name="age" placeholder="e.g. 45">
-    {% endif %}
-
-    <button type="submit">Predict Risk</button>
 </form>
 
 <div class="btn-group">
-    <a href="/"><button class="btn-secondary">🏠 Home</button></a>
-    <a href="/dashboard"><button class="btn-secondary">📊 Dashboard</button></a>
+    <a href="{{ url_for('main.home') }}"><button class="btn-secondary">🏠 Home</button></a>
+    <a href="{{ url_for('main.dashboard') }}"><button class="btn-secondary">📊 Dashboard</button></a>
 </div>
 
 <p class="note">
-    ℹ️ Use recent medical reports for best prediction accuracy.
+ℹ️ Use recent medical reports for best prediction accuracy.
 </p>
 
 </div>
+
+<script>
+const rules = {
+    pregnancies: {min: 0, max: 20},
+    glucose: {min: 50, max: 300},
+    bp: {min: 80, max: 200},
+    skin: {min: 5, max: 100},
+    insulin: {min: 10, max: 900},
+    bmi: {min: 10, max: 60},
+    dpf: {min: 0.05, max: 2.5},
+    age: {min: 1, max: 120},
+    sex: {min: 0, max: 1},
+    cp: {min: 0, max: 3},
+    chol: {min: 100, max: 600},
+    ecg: {min: 0, max: 2},
+    thalach: {min: 60, max: 220},
+    exang: {min: 0, max: 1},
+    urea: {min: 10, max: 200},
+    creatinine: {min: 0.5, max: 15},
+    sodium: {min: 120, max: 160},
+    potassium: {min: 2, max: 7},
+    hemo: {min: 5, max: 20},
+    pcv: {min: 15, max: 60},
+    sugar: {min: 0, max: 1}
+};
+
+function showError(input, message) {
+    input.classList.add("error");
+    let error = input.nextElementSibling;
+    if (!error || !error.classList.contains("error-message")) {
+        error = document.createElement("div");
+        error.className = "error-message";
+        input.parentNode.appendChild(error);
+    }
+    error.innerText = message;
+}
+
+function clearError(input) {
+    input.classList.remove("error");
+    let error = input.parentNode.querySelector(".error-message");
+    if (error) error.remove();
+}
+
+function validateField(input) {
+    let name = input.name;
+    let value = input.value;
+
+    if (value === "") {
+        showError(input, "This field is required");
+        return false;
+    }
+
+    if (value < 0) {
+        showError(input, "Value cannot be negative");
+        return false;
+    }
+
+    if (rules[name]) {
+        let min = rules[name].min;
+        let max = rules[name].max;
+
+        if (value < min || value > max) {
+            showError(input, `Expected range: ${min} – ${max}`);
+            return true;
+        }
+    }
+
+    clearError(input);
+    return true;
+}
+
+document.querySelectorAll("input[type='number']").forEach(input => {
+    input.addEventListener("input", () => {
+        validateField(input);
+    });
+});
+
+document.querySelector("form").addEventListener("submit", function(e) {
+    let inputs = document.querySelectorAll("input[type='number']");
+    let valid = true;
+
+    inputs.forEach(input => {
+        if (!validateField(input)) {
+            valid = false;
+        }
+    });
+
+    if (!valid) {
+        e.preventDefault();
+    }
+});
+</script>
+
 </body>
 </html>

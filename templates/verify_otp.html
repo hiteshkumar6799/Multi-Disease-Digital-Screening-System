@@ -97,7 +97,6 @@
         font-weight: bold;
     }
 
-    /* Flash messages */
     .flash {
         font-weight: bold;
         margin-bottom: 15px;
@@ -124,7 +123,6 @@
     <h2>Email Verification</h2>
     <p>Enter the 6-digit OTP sent to your email</p>
 
-    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -144,7 +142,7 @@
         OTP expires in <span id="countdown">05:00</span>
     </div>
 
-    <form action="/resend_otp" method="post">
+    <form action="{{ url_for('auth.resend_otp') }}" method="post">
         <button type="submit" class="resend" id="resendBtn" disabled>
             Resend OTP
         </button>

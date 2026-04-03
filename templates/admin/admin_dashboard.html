@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard | AI Healthcare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .topbar {
+            background: #0f4c75;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .topbar .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .topbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 16px 40px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            color: #34495e;
+        }
+
+        .card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0f4c75;
+        }
+
+        .section-title {
+            margin: 8px 0 14px;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .chart-card, .table-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .chart-box {
+            position: relative;
+            height: 260px;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f3f7;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .risk-high {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .risk-medium {
+            color: #b9770e;
+            font-weight: 600;
+        }
+
+        .risk-low {
+            color: #1e8449;
+            font-weight: 600;
+        }
+
+        .empty {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .chart-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .chart-box {
+                height: 240px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>Admin Dashboard – AI Healthcare</div>
+    <div class="nav-links">
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin.users') }}">Users</a>
+        <a href="{{ url_for('admin.predictions') }}">Predictions</a>
+        <a href="{{ url_for('admin.analytics') }}">Analytics</a>
+        <a href="{{ url_for('admin.export_csv') }}">Export CSV</a>
+        <a href="{{ url_for('main.dashboard') }}">Back to App</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- KPI CARDS -->
+    <div class="cards">
+        <div class="card">
+            <h3>Total Users</h3>
+            <div class="value">{{ total_users }}</div>
+        </div>
+        <div class="card">
+            <h3>Total Predictions</h3>
+            <div class="value">{{ total_predictions }}</div>
+        </div>
+        <div class="card">
+            <h3>High-Risk Cases</h3>
+            <div class="value">{{ high_risk_count }}</div>
+        </div>
+        <div class="card">
+            <h3>High-Risk %</h3>
+            <div class="value">{{ high_risk_pct }}%</div>
+        </div>
+        <div class="card">
+            <h3>Predictions Today</h3>
+            <div class="value">{{ predictions_today }}</div>
+        </div>
+        <div class="card">
+            <h3>Most Predicted Disease</h3>
+            <div class="value">{{ most_predicted_disease }}</div>
+        </div>
+    </div>
+
+    <!-- SUMMARY CHART + TOP USERS -->
+    <div class="chart-row">
+        <div class="chart-card">
+            <h3 class="section-title">Risk Distribution</h3>
+            <div class="chart-box">
+                <canvas id="riskChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <h3>Top Active Users</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Total Predictions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in top_users %}
+                    <tr>
+                        <td>{{ u[0] }}</td>
+                        <td>{{ u[1] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2">No user activity found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- LATEST HIGH-RISK CASES -->
+    <div class="card" style="margin-bottom: 24px;">
+        <h3>Latest High-Risk Cases</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Disease</th>
+                    <th>Prob%</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in latest_high_risk %}
+                <tr>
+                    <td>{{ p[0] }}</td>
+                    <td>{{ p[1] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>{{ '%.1f'|format(p[3] * 100) }}</td>
+                    <td>{{ p[5] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No high-risk cases found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- LATEST PREDICTIONS -->
+    <div class="card">
+        <h3>Latest Predictions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Disease</th>
+                    <th>Risk</th>
+                    <th>Prob%</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in latest_predictions %}
+                <tr>
+                    <td>{{ p[0] }}</td>
+                    <td>{{ p[1] or "—" }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td class="
+                        {% if p[3] == 'High Risk' %}risk-high
+                        {% elif p[3] == 'Medium Risk' %}risk-medium
+                        {% else %}risk-low{% endif %}
+                    ">
+                        {{ p[3] }}
+                    </td>
+                    <td>{{ '%.1f'|format(p[4]) }}</td>
+                    <td>{{ p[5] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No predictions yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const riskLabels = {{ risk_labels | tojson }};
+    const riskCounts = {{ risk_counts | tojson }};
+
+    new Chart(document.getElementById("riskChart"), {
+        type: "doughnut",
+        data: {
+            labels: riskLabels,
+            datasets: [{
+                data: riskCounts,
+                backgroundColor: ["#27ae60", "#c0392b", "#f39c12"]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin – Users | AI Healthcare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body { margin:0; font-family:"Segoe UI",Arial,sans-serif; background:#f4f6f9; }
+        .topbar {
+            background:#0f4c75; color:white; padding:12px 24px;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .topbar a { color:white; text-decoration:none; margin-left:12px; font-size:14px; }
+        .container { max-width:1000px; margin:25px auto 40px; padding:0 16px; }
+        table { width:100%; border-collapse:collapse; font-size:14px; background:white;
+                box-shadow:0 4px 10px rgba(0,0,0,0.06); border-radius:10px; overflow:hidden; }
+        th, td { padding:8px 10px; border-bottom:1px solid #e5e7eb; text-align:left; }
+        th { background:#f0f3f7; font-weight:600; color:#555; }
+        tr:last-child td { border-bottom:none; }
+        .badge { padding:3px 8px; border-radius:12px; font-size:12px; }
+        .badge-active { background:#e8f8f5; color:#1e8449; }
+        .badge-inactive { background:#fdecea; color:#c0392b; }
+        .badge-admin { background:#ebf5fb; color:#1f618d; }
+        form { display:inline; margin:0 2px; }
+        .btn-sm {
+            font-size:12px; padding:4px 8px; border-radius:6px;
+            border:none; cursor:pointer; background:#0f4c75; color:white;
+        }
+        .btn-danger { background:#c0392b; }
+        .flash { margin-bottom:10px; font-size:13px; }
+        .flash.success { color:#27ae60; }
+        .flash.error { color:#c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>Admin – Users</div>
+    <div>
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin.predictions') }}">Predictions</a>
+        <a href="{{ url_for('admin.analytics') }}">Analytics</a>
+        <a href="{{ url_for('main.dashboard') }}">Back to App</a>
+    </div>
+</div>
+
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Admin</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            {# u = (id, email, is_active, is_admin, created_at) #}
+            <tr>
+                <td>{{ u[0] }}</td>
+                <td>{{ u[1] }}</td>
+                <td>
+                    {% if u[3] %}
+                        <span class="badge badge-admin">Admin</span>
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u[2] %}
+                        <span class="badge badge-active">Active</span>
+                    {% else %}
+                        <span class="badge badge-inactive">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>{{ u[4] }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('admin.toggle_user_active', user_id=u[0]) }}">
+                        <button type="submit" class="btn-sm">
+                            {% if u[2] %}Deactivate{% else %}Activate{% endif %}
+                        </button>
+                    </form>
+                    <form method="post"
+                          action="{{ url_for('admin.delete_user', user_id=u[0]) }}"
+                          onsubmit="return confirm('Delete this user permanently?');">
+                        <button type="submit" class="btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" style="text-align:center;">No users found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin – Predictions | AI Healthcare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body { margin:0; font-family:"Segoe UI",Arial,sans-serif; background:#f4f6f9; }
+        .topbar {
+            background:#0f4c75; color:white; padding:12px 24px;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .topbar a { color:white; text-decoration:none; margin-left:12px; font-size:14px; }
+
+        .container { max-width:1100px; margin:25px auto 40px; padding:0 16px; }
+
+        .filters {
+            background:white; padding:12px 16px; border-radius:10px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.06); margin-bottom:18px;
+            font-size:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;
+        }
+        .filters label { font-size:12px; color:#555; display:block; margin-bottom:3px; }
+        .filters select,
+        .filters input[type="date"] {
+            padding:5px 8px; border-radius:6px; border:1px solid #d0d7de; font-size:13px;
+        }
+        .filters button {
+            padding:7px 14px; border-radius:6px; border:none;
+            background:#0f4c75; color:white; cursor:pointer; font-size:13px;
+        }
+        .filters a.clear-link {
+            font-size:12px; color:#c0392b; text-decoration:none; margin-left:6px;
+        }
+
+        table {
+            width:100%; border-collapse:collapse; font-size:14px; background:white;
+            box-shadow:0 4px 10px rgba(0,0,0,0.06); border-radius:10px; overflow:hidden;
+        }
+        th, td { padding:8px 10px; border-bottom:1px solid #e5e7eb; text-align:left; }
+        th { background:#f0f3f7; font-weight:600; color:#555; }
+        tr:last-child td { border-bottom:none; }
+
+        .risk-high { color:#c0392b; font-weight:600; }
+        .risk-medium { color:#b9770e; font-weight:600; }
+        .risk-low { color:#1e8449; font-weight:600; }
+
+        @media (max-width: 768px) {
+            .filters { flex-direction:column; align-items:stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>Admin – Predictions</div>
+    <div>
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin.users') }}">Users</a>
+        <a href="{{ url_for('admin.analytics') }}">Analytics</a>
+        <a href="{{ url_for('admin.export_csv') }}">Export CSV</a>
+        <a href="{{ url_for('main.dashboard') }}">Back to App</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <form method="get" class="filters">
+        <div>
+            <label for="disease">Disease</label>
+            <select name="disease" id="disease">
+                <option value="">All</option>
+                {% for d in diseases %}
+                    <option value="{{ d }}"
+                        {% if current_disease == d %}selected{% endif %}>
+                        {{ d|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="risk">Risk level</label>
+            <select name="risk" id="risk">
+                <option value="">All</option>
+                {% for r in risks %}
+                    <option value="{{ r }}"
+                        {% if current_risk == r %}selected{% endif %}>
+                        {{ r }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="from">From date</label>
+            <input type="date" id="from" name="from" value="{{ current_from or '' }}">
+        </div>
+
+        <div>
+            <label for="to">To date</label>
+            <input type="date" id="to" name="to" value="{{ current_to or '' }}">
+        </div>
+
+        <div>
+            <button type="submit">Apply Filters</button>
+            <a href="{{ url_for('admin.predictions') }}" class="clear-link">Clear</a>
+        </div>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Disease</th>
+            <th>Risk</th>
+            <th>Prob%</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in predictions %}
+            {# p = (id, user_email, disease_type, risk_level, probability, created_at) #}
+            <tr>
+                <td>{{ p[0] }}</td>
+                <td>{{ p[1] or "—" }}</td>
+                <td>{{ p[2] }}</td>
+                <td class="
+                    {% if p[3] == 'High Risk' %}risk-high
+                    {% elif p[3] == 'Medium Risk' %}risk-medium
+                    {% else %}risk-low{% endif %}
+                ">
+                    {{ p[3] }}
+                </td>
+                <td>{{ '%.1f'|format(p[4]) }}</td>
+                <td>{{ p[5] }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" style="text-align:center;">No predictions found for selected filters.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

@@ -1,7 +1,32 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.db-journal
-.env
+
+# Virtual Environment
 venv/
+
+# Environment variables (secrets)
+.env
+
+# Flask instance folder
+instance/
+
+# Dataset (not needed in production)
+dataset/
+
+# OS files
+.DS_Store
+
+# VS Code settings
+.vscode/
+
+# Logs
+*.log
+
+# Optional safety (SQLite leftovers)
+*.db
+*.sqlite3
+*.db-journal   
+notebooks

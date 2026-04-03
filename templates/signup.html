@@ -113,7 +113,7 @@
         Join our AI-powered healthcare screening platform
     </div>
 
-    <form method="POST" action="/signup" onsubmit="return validatePasswords()">
+    <form method="POST" action="{{ url_for('auth.signup') }}" onsubmit="return validatePasswords()">
 
         <label>Email Address</label>
         <input type="email" name="email" required placeholder="example@email.com">
@@ -140,7 +140,7 @@
     </form>
 
     <div class="login-link">
-        Already have an account? <a href="/login">Login</a>
+        Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
     </div>
 
     <div class="footer-note">

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics | AI Healthcare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .topbar {
+            background: #0f4c75;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .topbar .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .topbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 16px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 18px;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .page-header p {
+            margin: 4px 0 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .chart-card, .table-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .chart-card h3, .table-card h3 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .chart-box {
+            position: relative;
+            height: 300px;
+        }
+
+        .wide-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+            gap: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f3f7;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .chart-box {
+                height: 260px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>Analytics – AI Healthcare</div>
+    <div class="nav-links">
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin.users') }}">Users</a>
+        <a href="{{ url_for('admin.predictions') }}">Predictions</a>
+        <a href="{{ url_for('admin.analytics') }}">Analytics</a>
+        <a href="{{ url_for('admin.export_csv') }}">Export CSV</a>
+        <a href="{{ url_for('main.dashboard') }}">Back to App</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="page-header">
+        <h2>Detailed Analytics</h2>
+        <p>Explore disease patterns, risk levels, and prediction trends for deeper insights.</p>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3>Disease Distribution</h3>
+            <div class="chart-box">
+                <canvas id="diseaseChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Risk Distribution</h3>
+            <div class="chart-box">
+                <canvas id="riskChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="wide-card">
+        <h3>Prediction Trend by Date</h3>
+        <div class="chart-box">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3>High-Risk Trend</h3>
+            <div class="chart-box">
+                <canvas id="highRiskTrendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Average Probability by Disease</h3>
+            <div class="chart-box">
+                <canvas id="avgProbabilityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="wide-card">
+        <h3>High-Risk Cases by Disease</h3>
+        <div class="chart-box">
+            <canvas id="highRiskDiseaseChart"></canvas>
+        </div>
+    </div>
+
+    <div class="table-grid">
+        <div class="table-card">
+            <h3>Top Active Users</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Total Predictions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in top_users %}
+                    <tr>
+                        <td>{{ u[0] }}</td>
+                        <td>{{ u[1] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2">No data found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-card">
+            <h3>Latest High-Risk Cases</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Disease</th>
+                        <th>Probability</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in latest_high_risk %}
+                    <tr>
+                        <td>{{ p[0] }}</td>
+                        <td>{{ p[1] }}</td>
+                        <td>{{ p[2] }}</td>
+                        <td>{{ '%.1f'|format(p[3] * 100) }}%</td>
+                        <td>{{ p[5] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">No high-risk cases found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const diseaseLabels = {{ disease_labels | tojson }};
+    const diseaseCounts = {{ disease_counts | tojson }};
+
+    const riskLabels = {{ risk_labels | tojson }};
+    const riskCounts = {{ risk_counts | tojson }};
+
+    const trendLabels = {{ trend_labels | tojson }};
+    const trendCounts = {{ trend_counts | tojson }};
+
+    const highRiskTrendLabels = {{ high_risk_trend_labels | tojson }};
+    const highRiskTrendCounts = {{ high_risk_trend_counts | tojson }};
+
+    const avgProbLabels = {{ avg_prob_labels | tojson }};
+    const avgProbValues = {{ avg_prob_values | tojson }};
+
+    const highRiskDiseaseLabels = {{ high_risk_disease_labels | tojson }};
+    const highRiskDiseaseCounts = {{ high_risk_disease_counts | tojson }};
+
+    new Chart(document.getElementById("diseaseChart"), {
+        type: "bar",
+        data: {
+            labels: diseaseLabels,
+            datasets: [{
+                label: "Predictions",
+                data: diseaseCounts,
+                backgroundColor: ["#0f4c75", "#3498db", "#16a085", "#9b59b6", "#f39c12"],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    new Chart(document.getElementById("riskChart"), {
+        type: "pie",
+        data: {
+            labels: riskLabels,
+            datasets: [{
+                data: riskCounts,
+                backgroundColor: ["#27ae60", "#c0392b", "#f39c12"]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+            labels: trendLabels,
+            datasets: [{
+                label: "Predictions",
+                data: trendCounts,
+                borderColor: "#0f4c75",
+                backgroundColor: "rgba(15, 76, 117, 0.12)",
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("highRiskTrendChart"), {
+        type: "line",
+        data: {
+            labels: highRiskTrendLabels,
+            datasets: [{
+                label: "High-Risk Cases",
+                data: highRiskTrendCounts,
+                borderColor: "#c0392b",
+                backgroundColor: "rgba(192, 57, 43, 0.12)",
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("avgProbabilityChart"), {
+        type: "bar",
+        data: {
+            labels: avgProbLabels,
+            datasets: [{
+                label: "Average Probability",
+                data: avgProbValues,
+                backgroundColor: "#16a085",
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(document.getElementById("highRiskDiseaseChart"), {
+        type: "bar",
+        data: {
+            labels: highRiskDiseaseLabels,
+            datasets: [{
+                label: "High-Risk Cases",
+                data: highRiskDiseaseCounts,
+                backgroundColor: "#c0392b",
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
+</body>
+</html>
