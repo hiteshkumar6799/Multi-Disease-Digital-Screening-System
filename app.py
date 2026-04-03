@@ -1,9 +1,10 @@
 from flask import Flask
 from datetime import datetime
+import os
 
 from config import Config
 from extensions import mail
-import os
+
 
 def create_app():
     app = Flask(__name__)
@@ -47,8 +48,11 @@ def create_app():
 
 
 app = create_app()
+
+# ✅ Initialize DB safely inside app context
 from database.db_setup import init_db
-init_db()
+with app.app_context():
+    init_db()
 
 
 if __name__ == "__main__":
