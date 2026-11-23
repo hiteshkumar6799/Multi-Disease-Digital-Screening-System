@@ -16,25 +16,9 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_USERNAME')
 
-    # 🔥 Database configuration
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-
-    if DATABASE_URL:
-        # Fix Render postgres:// issue
-        if DATABASE_URL.startswith("postgres://"):
-            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
-        SQLALCHEMY_DATABASE_URI = DATABASE_URL
-    else:
-        # 👇 Local PostgreSQL fallback
-        PG_HOST = os.environ.get("PG_HOST", "localhost")
-        PG_DB = os.environ.get("PG_DB", "health_data")
-        PG_USER = os.environ.get("PG_USER", "postgres")
-        PG_PASSWORD = os.environ.get("PG_PASSWORD", "postgres")
-        PG_PORT = int(os.environ.get("PG_PORT", 5432))
-
-        SQLALCHEMY_DATABASE_URI = (
-            f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}"
-        )
-
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Postgres settings (used by psycopg2 helper)
+    PG_HOST = os.environ.get("PG_HOST", "localhost")
+    PG_DB = os.environ.get("PG_DB", "health_data")
+    PG_USER = os.environ.get("PG_USER", "postgres")
+    PG_PASSWORD = os.environ.get("PG_PASSWORD", "postgres")
+    PG_PORT = int(os.environ.get("PG_PORT", 5432))   

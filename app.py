@@ -1,6 +1,5 @@
 from flask import Flask
 from datetime import datetime
-import os
 
 from config import Config
 from extensions import mail
@@ -28,6 +27,7 @@ def create_app():
                     try:
                         value = datetime.strptime(value, "%Y-%m-%d %H:%M:%S.%f")
                     except ValueError:
+                        
                         return value
 
         return value.strftime("%d %b %Y, %I:%M %p")
@@ -49,12 +49,5 @@ def create_app():
 
 app = create_app()
 
-# ✅ Initialize DB safely inside app context
-from database.db_setup import init_db
-with app.app_context():
-    init_db()
-
-
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)

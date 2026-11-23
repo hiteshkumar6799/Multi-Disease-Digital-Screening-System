@@ -385,6 +385,16 @@ Since this is a healthcare-related application, sensitive health information sho
 
 ---
 
+
+## Project Screenshots
+
+### front page
+![opening page](screenshots/front_page.png)
+
+### Disease Prediction
+![Prediction Result](screenshots/prediction.png)
+
+
 ## 🚀 14. Future Enhancements
 
 Possible future improvements include:
